@@ -10,6 +10,7 @@ import { api } from "@services/api";
 export type AuthContextDataProps = {
   user: UserDTO;
   signIn: (email: string, password: string) => Promise<void>;
+  updateUserProfile: (userUpdated: UserDTO) => Promise<void>;
   signOut: () => void;
   isLoadingUserStorageData: boolean;
 }
@@ -73,6 +74,15 @@ export function AuthContextProvider({ children }: AuthContextProvider) {
     }
   }
 
+  async function updateUserProfile(userUpdated: UserDTO) {
+    try {
+      setUser(userUpdated);
+      await storageUserSave(userUpdated);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async function loadUserData() {
     try {
       setIsLoadingUserStorageData(true);
@@ -99,6 +109,7 @@ export function AuthContextProvider({ children }: AuthContextProvider) {
       user,
       signIn,
       signOut,
+      updateUserProfile,
       isLoadingUserStorageData,
     }}>
       {children}
